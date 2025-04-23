@@ -11,7 +11,10 @@ body {
 }
 
 .container {
+  width: 100%;
+  max-width: 100%;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .brand {
@@ -70,11 +73,30 @@ button {
   background: #222;
   padding: 20px;
   border-radius: 10px;
-  margin: 15px 0;
+  margin: 15px auto;
   border-left: 5px solid #f54291;
+  width: 90%;
+  max-width: 300px;
 }
 
+/* Optional subtitle fix */
 .subtitle {
   margin-top: 10px;
   color: #ccc;
+}
+
+/* Mobile responsive tweaks */
+@media screen and (max-width: 768px) {
+  .game-card {
+    width: 100%;
+    font-size: 1.1rem;
+  }
+
+  .welcome h1 {
+    font-size: 2rem;
+  }
+
+  .welcome p {
+    font-size: 1rem;
+  }
   }
