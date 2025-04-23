@@ -1,0 +1,80 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #111;
+  color: #fff;
+}
+
+.center {
+  text-align: center;
+  margin-top: 15%;
+}
+
+.container {
+  padding: 20px;
+}
+
+.brand {
+  color: #f54291;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 25px;
+  background: #f54291;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+.auth-container, .verify-container, .dash-container {
+  max-width: 400px;
+  margin: 10% auto;
+  padding: 30px;
+  background: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #f54291;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 6px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: #f54291;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.chat-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.chat-link a {
+  color: #f54291;
+  text-decoration: underline;
+}
+
+.game-card {
+  background: #222;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 15px 0;
+  border-left: 5px solid #f54291;
+}
+
+.subtitle {
+  margin-top: 10px;
+  color: #ccc;
+  }
