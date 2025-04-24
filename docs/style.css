@@ -44,6 +44,14 @@ h2 {
 .btn:hover {
   transform: scale(1.05);
   box-shadow: 0 0 15px #f54291;
+  animation: glowing 1.5s ease-in-out infinite alternate;
+}
+
+/* Glowing effect on hover */
+@keyframes glowing {
+  0% { box-shadow: 0 0 5px #f54291, 0 0 10px #f54291; }
+  50% { box-shadow: 0 0 20px #f54291, 0 0 30px #f54291; }
+  100% { box-shadow: 0 0 5px #f54291, 0 0 10px #f54291; }
 }
 
 .auth-container,
@@ -156,3 +164,22 @@ button {
   50% { color: #ff8db2; }
   100% { color: #f54291; }
 }
+
+/* Added: Glow animation and flashing indicator for button */
+.get-started-text {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 15px;
+  color: #fff;
+}
+
+.get-started-text a {
+  color: #f54291;
+  text-decoration: underline;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.get-started-text a:hover {
+  color: #ff8db2;
+  }
