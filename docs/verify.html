@@ -5,17 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FavBoostX - Verify</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .error-message {
+      color: #ff8db2;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+    .why-id {
+      text-align: center;
+      color: #ccc;
+      font-size: 0.95rem;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body class="verify">
   <div class="verify-container">
     <h2>Enter Access ID</h2>
-    <form action="dashboard.html">
-      <input type="text" placeholder="Access ID" required>
+    <form id="verifyForm">
+      <input type="text" id="accessId" placeholder="Access ID" required>
       <button type="submit">Verify</button>
+      <p class="error-message" id="errorMsg">Wrong ID. Please contact support or <a href="https://wa.me/2348100096815">Chat Now</a></p>
     </form>
     <p class="chat-link">
       Don’t have an ID? <a href="https://wa.me/2348100096815">Chat Now</a>
     </p>
+    <p class="why-id">
+      Why do we need your Access ID?<br>
+      It’s completely free — but it’s used for verification and to keep our community secure. Thanks for understanding!
+    </p>
   </div>
+
+  <script>
+    document.getElementById('verifyForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const input = document.getElementById('accessId').value.trim();
+      const pattern = /^[A-Za-z]+[0-9]+$/; // e.g. Favboostx235, Sport567
+      if (pattern.test(input)) {
+        window.location.href = "dashboard.html"; // success
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';
+      }
+    });
+  </script>
 </body>
-</html>
+  </html>
