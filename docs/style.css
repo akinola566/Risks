@@ -19,6 +19,14 @@ body {
 
 .brand {
   color: #f54291;
+  animation: shimmer 3s infinite ease-in-out;
+}
+
+h2 {
+  text-align: center;
+  color: #f54291;
+  margin-top: 40px;
+  margin-bottom: 20px;
 }
 
 .btn {
@@ -29,9 +37,18 @@ body {
   color: #fff;
   text-decoration: none;
   border-radius: 8px;
+  font-size: 1.1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.auth-container, .verify-container, .dash-container {
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #f54291;
+}
+
+.auth-container,
+.verify-container,
+.dash-container {
   max-width: 400px;
   margin: 10% auto;
   padding: 30px;
@@ -79,24 +96,63 @@ button {
   max-width: 300px;
 }
 
-/* Optional subtitle fix */
 .subtitle {
   margin-top: 10px;
   color: #ccc;
+  text-align: center;
+  font-size: 1.1rem;
 }
 
-/* Mobile responsive tweaks */
+.landing .container {
+  margin-bottom: 40px;
+}
+
+.landing .tagline {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+.landing .btn {
+  margin-top: 25px;
+}
+
+/* Footer */
+.container.center p {
+  margin: 10px 0;
+  font-size: 0.95rem;
+  color: #aaa;
+}
+
+.container.center a {
+  color: #f54291;
+  text-decoration: none;
+}
+
+/* Mobile tweaks */
 @media screen and (max-width: 768px) {
   .game-card {
     width: 100%;
     font-size: 1.1rem;
   }
 
-  .welcome h1 {
+  h1 {
     font-size: 2rem;
   }
 
-  .welcome p {
+  .tagline {
     font-size: 1rem;
   }
+
+  .btn {
+    font-size: 1rem;
+    padding: 10px 20px;
   }
+}
+
+/* ======= Added Animations Below ======= */
+@keyframes shimmer {
+  0% { color: #f54291; }
+  50% { color: #ff8db2; }
+  100% { color: #f54291; }
+}
