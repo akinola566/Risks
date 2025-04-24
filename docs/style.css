@@ -182,4 +182,131 @@ button {
 
 .get-started-text a:hover {
   color: #ff8db2;
-  }
+}
+
+/* New styles for Dashboard content */
+
+/* User Profile Section */
+.user-profile {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.user-profile img {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border: 3px solid #f54291;
+}
+
+.user-profile h3 {
+  margin-top: 10px;
+  color: #fff;
+}
+
+/* Welcome Message */
+.welcome-message {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+/* Referral Progress Section */
+.referral-progress {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.referral-progress h4 {
+  color: #f54291;
+}
+
+.progress-bar {
+  width: 100%;
+  background: #333;
+  border-radius: 10px;
+  height: 20px;
+  margin-top: 10px;
+}
+
+.progress {
+  background: #f54291;
+  height: 100%;
+  border-radius: 10px;
+}
+
+/* Stats Section */
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.stat {
+  background: #222;
+  padding: 15px;
+  border-radius: 10px;
+  width: 30%;
+  text-align: center;
+}
+
+.stat h5 {
+  color: #f54291;
+}
+
+.stat p {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Quick Access Buttons */
+.quick-access {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.quick-access .btn {
+  padding: 12px 18px;
+  font-size: 1rem;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.quick-access .btn:last-child {
+  margin-right: 0;
+}
+
+/* Leaderboard Section */
+.leaderboard {
+  margin-top: 40px;
+  background: #222;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.leaderboard h4 {
+  color: #f54291;
+  text-align: center;
+}
+
+.leaderboard ul {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+}
+
+.leaderboard li {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+/* Announcements Section */
+.announcements marquee {
+  font-size: 1.2rem;
+  color: #ff8db2;
+  margin-top: 20px;
+    }
