@@ -1,21 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FavBoostX Aviator Demo</title>
-  <link rel="stylesheet" href="demo-style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(270deg, #1b1b2f, #162447, #1f4068, #1b1b2f);
+      background-size: 600% 600%;
+      animation: backgroundShift 20s ease infinite;
+      overflow-x: hidden;
+      color: white;
+    }@keyframes backgroundShift {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
+}
+
+.container {
+  text-align: center;
+  padding-top: 50px;
+}
+
+.aviator {
+  width: 200px;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
+
+.multiplier {
+  margin-top: 30px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #f54291;
+  animation: slideRight 3s linear infinite;
+}
+
+@keyframes slideRight {
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+.schedule {
+  margin-top: 60px;
+  font-size: 1.2rem;
+  line-height: 2;
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+audio {
+  display: none;
+}
+
+  </style>
 </head>
 <body>
+  <audio autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/11/03/audio_0c90c40992.mp3?filename=plane-flying-overhead-125594.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>  <div class="container">
+    <img src="https://crash-casino.com/wp-content/uploads/2021/08/awiator-1win.png" class="aviator" alt="Aviator Plane"><div class="multiplier" id="multiplier">1.00x</div>
 
-  <div class="aviator-container">
-    <img src="https://crash-casino.com/wp-content/uploads/2021/08/awiator-1win.png" alt="Aviator Plane" class="aviator-image">
-    <div id="multiplier-container"></div>
-    <div class="prediction" id="prediction"></div>
-    <div class="calculating" id="calculating">Calculating<span id="dots"></span></div>
-  </div>
+<div class="schedule">
+  <h3>Upcoming Predictions</h3>
+  <p>5 PM — Play 10x</p>
+  <p>5:30 PM — Play 30x</p>
+  <p>6 PM — Play 100x</p>
+</div>
 
-  <audio id="planeSound" src="https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3" autoplay loop></audio>
+  </div>  <script>
+    const multipliers = ['1.82x', '3.44x', '7.92x', '2.01x', '12.34x', '5.50x', '9.12x', '2.22x', '6.78x', '4.44x'];
+    let index = 0;
 
-  <script src="demo.js"></script>
-</body>
-</html>
+    function updateMultiplier() {
+      const multiplierElement = document.getElementById('multiplier');
+      multiplierElement.textContent = multipliers[index];
+      index = (index + 1) % multipliers.length;
+    }
+
+    setInterval(updateMultiplier, 3000);
+  </script></body>
+  </html>
