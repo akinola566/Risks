@@ -309,4 +309,38 @@ button {
   font-size: 1.2rem;
   color: #ff8db2;
   margin-top: 20px;
-    }
+}
+
+/* ======== New Parts Added Now ======== */
+
+/* New Football Prediction Card */
+.game-card-football {
+  background: #1d1d1d;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 15px auto;
+  border-left: 5px solid #f54291;
+  width: 90%;
+  max-width: 350px;
+  box-shadow: 0 0 10px #f54291;
+}
+
+/* Coming Soon Section */
+.coming-soon {
+  background: #1e1e1e;
+  margin-top: 40px;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 15px #f54291;
+}
+
+.coming-soon h2 {
+  color: #f54291;
+  margin-bottom: 10px;
+}
+
+.coming-soon p {
+  color: #ccc;
+  font-size: 1.1rem;
+  }
