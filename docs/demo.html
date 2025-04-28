@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,78 +13,122 @@
       animation: backgroundShift 20s ease infinite;
       overflow-x: hidden;
       color: white;
-    }@keyframes backgroundShift {
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
-}
+    }
 
-.container {
-  text-align: center;
-  padding-top: 50px;
-}
+    @keyframes backgroundShift {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
 
-.aviator {
-  width: 200px;
-  animation: float 4s ease-in-out infinite;
-}
+    .container {
+      text-align: center;
+      padding-top: 50px;
+    }
 
-@keyframes float {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0); }
-}
+    .aviator {
+      width: 200px;
+      animation: float 4s ease-in-out infinite;
+      display: none;
+    }
 
-.multiplier {
-  margin-top: 30px;
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #f54291;
-  animation: slideRight 3s linear infinite;
-}
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
 
-@keyframes slideRight {
-  0% { transform: translateX(-100%); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translateX(100%); opacity: 0; }
-}
+    .multiplier {
+      margin-top: 30px;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #f54291;
+      animation: slideRight 3s linear infinite;
+      display: none;
+    }
 
-.schedule {
-  margin-top: 60px;
-  font-size: 1.2rem;
-  line-height: 2;
-  background: rgba(0,0,0,0.3);
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-}
+    @keyframes slideRight {
+      0% { transform: translateX(-100%); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateX(100%); opacity: 0; }
+    }
 
-audio {
-  display: none;
-}
+    .schedule {
+      margin-top: 60px;
+      font-size: 1.2rem;
+      line-height: 2;
+      background: rgba(0,0,0,0.3);
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      display: none;
+    }
 
+    .start-btn {
+      margin-top: 50px;
+      padding: 12px 25px;
+      font-size: 1.2rem;
+      background-color: #f54291;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      display: none;
+    }
+
+    .start-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #f54291;
+    }
+
+    .loading-text {
+      margin-top: 100px;
+      font-size: 1.5rem;
+      animation: blink 1s infinite alternate;
+    }
+
+    @keyframes blink {
+      from { opacity: 1; }
+      to { opacity: 0.5; }
+    }
+
+    audio {
+      display: none;
+    }
   </style>
 </head>
+
 <body>
-  <audio autoplay loop>
+  <audio id="planeSound">
     <source src="https://cdn.pixabay.com/download/audio/2022/11/03/audio_0c90c40992.mp3?filename=plane-flying-overhead-125594.mp3" type="audio/mp3">
     Your browser does not support the audio element.
-  </audio>  <div class="container">
-    <img src="https://crash-casino.com/wp-content/uploads/2021/08/awiator-1win.png" class="aviator" alt="Aviator Plane"><div class="multiplier" id="multiplier">1.00x</div>
+  </audio>
 
-<div class="schedule">
-  <h3>Upcoming Predictions</h3>
-  <p>5 PM — Play 10x</p>
-  <p>5:30 PM — Play 30x</p>
-  <p>6 PM — Play 100x</p>
-</div>
+  <div class="container">
+    <div class="loading-text" id="loading">Loading...</div>
 
-  </div>  <script>
+    <button class="start-btn" id="startButton" onclick="startDemo()">Start Demo</button>
+
+    <img src="https://crash-casino.com/wp-content/uploads/2021/08/awiator-1win.png" class="aviator" id="aviator" alt="Aviator Plane">
+
+    <div class="multiplier" id="multiplier">1.00x</div>
+
+    <div class="schedule" id="schedule">
+      <h3>Upcoming Predictions</h3>
+      <p>5 PM — Play 10x</p>
+      <p>5:30 PM — Play 30x</p>
+      <p>6 PM — Play 100x</p>
+    </div>
+  </div>
+
+  <script>
     const multipliers = ['1.82x', '3.44x', '7.92x', '2.01x', '12.34x', '5.50x', '9.12x', '2.22x', '6.78x', '4.44x'];
     let index = 0;
+    let intervalId;
 
     function updateMultiplier() {
       const multiplierElement = document.getElementById('multiplier');
@@ -91,6 +136,21 @@ audio {
       index = (index + 1) % multipliers.length;
     }
 
-    setInterval(updateMultiplier, 3000);
-  </script></body>
-  </html>
+    function startDemo() {
+      document.getElementById('startButton').style.display = 'none';
+      document.getElementById('aviator').style.display = 'block';
+      document.getElementById('multiplier').style.display = 'block';
+      document.getElementById('schedule').style.display = 'block';
+      document.getElementById('planeSound').play();
+      intervalId = setInterval(updateMultiplier, 3000);
+    }
+
+    window.onload = function() {
+      setTimeout(() => {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('startButton').style.display = 'inline-block';
+      }, 3000); // Show Start Button after 3 seconds
+    }
+  </script>
+</body>
+</html>
