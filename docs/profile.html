@@ -1,74 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Favboosx</title>
-    <link rel="stylesheet" href="styles.css">
-    <!-- Include your favorite CSS framework if any (like Bootstrap) -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FavBoostX Dashboard</title>
+  <style>
+    :root {
+      --bg-color: #111;
+      --text-color: #fff;
+      --card-color: #222;
+      --accent-color: #f54291;
+    }
+    [data-theme="light"] {
+      --bg-color: #eee;
+      --text-color: #111;
+      --card-color: #fff;
+      --accent-color: #f54291;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.5s, color 0.5s;
+    }
+    .container {
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: var(--accent-color);
+      margin-bottom: 10px;
+    }
+    .profile-card, .spin-card {
+      background: var(--card-color);
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 10px var(--accent-color);
+    }
+    .balance {
+      font-size: 1.5rem;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    button {
+      background: var(--accent-color);
+      border: none;
+      padding: 12px 20px;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin: 10px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .popup {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      background: var(--card-color);
+      color: var(--text-color);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px var(--accent-color);
+      text-align: center;
+      z-index: 1000;
+    }
+    .theme-toggle {
+      margin-top: 20px;
+      font-size: 1rem;
+      color: var(--accent-color);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
 </head>
-<body class="light-mode">
-    <div class="profile-container">
-        <!-- Profile Header -->
-        <div class="profile-header">
-            <h2>Welcome, [Username]</h2>
-            <img src="[Profile_Picture_URL]" alt="Profile Picture" class="profile-picture">
-        </div>
 
-        <!-- Profile Settings -->
-        <div class="profile-settings">
-            <form action="/update_profile" method="POST" enctype="multipart/form-data">
-                <label for="username">Change Name:</label>
-                <input type="text" id="username" name="username" value="[UserName]">
-                
-                <label for="profile_picture">Upload Profile Picture:</label>
-                <input type="file" id="profile_picture" name="profile_picture">
+<body>
+  <div class="container">
+    <h1>FavBoostX Dashboard</h1>
 
-                <button type="submit">Update Profile</button>
-            </form>
-
-            <!-- Dark Mode Toggle -->
-            <div class="dark-mode-toggle">
-                <label for="dark-mode">Dark Mode:</label>
-                <input type="checkbox" id="dark-mode" onchange="toggleDarkMode()">
-            </div>
-        </div>
-
-        <!-- Balance Section -->
-        <div class="balance-section">
-            <h3>Balance: 100 Naira</h3>
-        </div>
-
-        <!-- Action Buttons (Withdraw & Deposit) -->
-        <div class="action-buttons">
-            <div class="green-box">
-                <button onclick="location.href='/withdraw'">Withdraw</button>
-                <button onclick="location.href='/deposit'">Deposit</button>
-            </div>
-        </div>
-
-        <!-- Rewards, Spin, Check-in -->
-        <div class="extras">
-            <div class="rewards">
-                <h4>Your Rewards</h4>
-                <!-- Display rewards points -->
-            </div>
-            <div class="daily-spin">
-                <button onclick="startSpin()">Spin Now</button>
-            </div>
-            <div class="check-in">
-                <button onclick="checkIn()">Check-in Today</button>
-            </div>
-        </div>
+    <div class="profile-card">
+      <h2 id="username">Hello, Guest!</h2>
+      <div class="balance">Balance: <span id="balance">0</span> BK</div>
+      <button onclick="checkIn()">Daily Check-in (+5 BK)</button>
     </div>
 
-    <script>
-        // Dark Mode toggle script
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
+    <div class="spin-card">
+      <h2>Daily Spin</h2>
+      <button onclick="startSpin()">Spin Now</button>
+      <div id="spinResult" style="margin-top: 10px;"></div>
+    </div>
 
-        // Add spin and check-in functionalities as needed
-    </script>
+    <div class="popup" id="popup"></div>
+
+    <div class="theme-toggle" onclick="toggleTheme()">Toggle Dark/Light Mode</div>
+  </div>
+
+  <script>
+    // Initial values
+    let balance = localStorage.getItem('balance') ? parseInt(localStorage.getItem('balance')) : 0;
+    let username = localStorage.getItem('username') || "Guest";
+    let spinsToday = localStorage.getItem('spinsToday') ? parseInt(localStorage.getItem('spinsToday')) : 0;
+    let lossesBeforeWin = 2;
+
+    document.getElementById('balance').innerText = balance;
+    document.getElementById('username').innerText = "Hello, " + username + "!";
+
+    // Daily Check-In
+    function checkIn() {
+      const today = new Date().toDateString();
+      if (localStorage.getItem('lastCheckIn') === today) {
+        alert("Already checked in today!");
+        return;
+      }
+      balance += 5;
+      updateBalance();
+      localStorage.setItem('lastCheckIn', today);
+      showPopup("Checked in! +5 BK");
+    }
+
+    // Spin Logic
+    function startSpin() {
+      const today = new Date().toDateString();
+      if (localStorage.getItem('lastSpinDate') !== today) {
+        spinsToday = 0;
+        localStorage.setItem('lastSpinDate', today);
+      }
+
+      if (spinsToday >= 2) {
+        showPopup("You reached maximum wins today. Come back tomorrow!");
+        return;
+      }
+
+      // Must lose twice before winning
+      if (lossesBeforeWin > 0) {
+        lossesBeforeWin--;
+        showPopup("Try Again!");
+      } else {
+        const reward = Math.floor(Math.random() * 10) + 1; // Random reward 1-10 BK
+        balance += reward;
+        updateBalance();
+        showPopup("Congrats! You won +" + reward + " BK");
+        spinsToday++;
+      }
+
+      localStorage.setItem('spinsToday', spinsToday);
+    }
+
+    // Update balance
+    function updateBalance() {
+      document.getElementById('balance').innerText = balance;
+      localStorage.setItem('balance', balance);
+    }
+
+    // Popup function
+    function showPopup(message) {
+      const popup = document.getElementById('popup');
+      popup.innerText = message;
+      popup.style.display = "block";
+      setTimeout(() => {
+        popup.style.display = "none";
+      }, 2500);
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      const currentTheme = document.body.getAttribute('data-theme');
+      if (currentTheme === "light") {
+        document.body.removeAttribute('data-theme');
+        localStorage.setItem('theme', "dark");
+      } else {
+        document.body.setAttribute('data-theme', "light");
+        localStorage.setItem('theme', "light");
+      }
+    }
+
+    // Load saved theme
+    if (localStorage.getItem('theme') === "light") {
+      document.body.setAttribute('data-theme', "light");
+    }
+  </script>
 </body>
 </html>
