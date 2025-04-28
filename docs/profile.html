@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      background-color: #121212;
+      color: #fff;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .profile-header img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-right: 20px;
+    }
+    .profile-header .edit-btn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .balance {
+      text-align: center;
+      font-size: 24px;
+      margin: 20px 0;
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .balance span {
+      color: green;
+      font-weight: bold;
+    }
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+    .actions a {
+      flex: 1;
+      text-align: center;
+      margin: 0 5px;
+      padding: 15px;
+      background: green;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .interactive {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .interactive div {
+      flex: 1;
+      margin: 0 5px;
+      background: #f9f9f9;
+      padding: 15px;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .settings {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .settings label {
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="profile-header">
+      <img src="default-avatar.png" alt="Profile Picture" id="profile-pic">
+      <div>
+        <h2 id="user-name">John Doe</h2>
+        <button class="edit-btn" onclick="editName()">Edit Name</button>
+        <input type="file" id="upload-pic" class="hidden" onchange="uploadPicture(event)">
+      </div>
+    </div>
+    <div class="balance">
+      Balance: <span>100 Naira</span> (Signup Bonus)
+    </div>
+    <div class="actions">
+      <a href="withdrawal.html">Withdraw</a>
+      <a href="deposit.html">Deposit</a>
+    </div>
+    <div class="interactive">
+      <div>
+        <h3>Rewards</h3>
+        <p>View your earned rewards here.</p>
+      </div>
+      <div>
+        <h3>Daily Spin</h3>
+        <p>Spin the wheel for daily prizes.</p>
+      </div>
+      <div>
+        <h3>Check-In</h3>
+        <p>Mark your daily attendance.</p>
+      </div>
+    </div>
+    <div class="settings">
+      <label>
+        <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()"> Dark Mode
+      </label>
+    </div>
+  </div>
+  <script>
+    function editName() {
+      const name = prompt("Enter your new name:", document.getElementById('user-name').textContent);
+      if (name) {
+        document.getElementById('user-name').textContent = name;
+      }
+    }
+
+    function uploadPicture(event) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        document.getElementById('profile-pic').src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+  </script>
+</body>
+  </html>
