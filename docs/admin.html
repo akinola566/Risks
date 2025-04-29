@@ -2,140 +2,177 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - FavBoostX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Control Panel</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    table {
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #ff4444;
+    }
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-box {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    .stat-box.red {
+      background-color: #8b0000;
+    }
+    .stat-box.green {
+      background-color: #006400;
+    }
+    .stat-box.blue {
+      background-color: #003366;
+    }
+    .users-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
     }
-    table, th, td {
-      border: 1px solid #ddd;
-    }
-    th, td {
+    .users-table th, .users-table td {
+      border: 1px solid #444;
       padding: 10px;
       text-align: center;
     }
-    th {
-      background-color: #f2f2f2;
-    }
-    .ban-btn, .unban-btn {
-      cursor: pointer;
-      color: #fff;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
+    .users-table th {
+      background-color: #222;
     }
     .ban-btn {
-      background-color: red;
+      padding: 5px 10px;
+      background-color: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
     .unban-btn {
-      background-color: green;
+      background-color: #228B22;
+    }
+    .lock-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      color: #ff4444;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>Admin Dashboard</h1>
+  <div class="lock-icon" title="Back to Dashboard">
+    <a href="dashboard.html" style="text-decoration:none;color:#ff4444;">&#128274;</a>
+  </div>
+  <h1>Admin Panel</h1>
 
-  <div>
-    <h3>Users List</h3>
-    <table id="usersTable">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>IP Address</th>
-          <th>Join Date</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Dynamic user rows will be populated here -->
-      </tbody>
-    </table>
+  <div class="stats">
+    <div class="stat-box red">
+      <h3>Total Users</h3>
+      <p id="totalUsers">0</p>
+    </div>
+    <div class="stat-box green">
+      <h3>New Users</h3>
+      <p id="newUsers">0</p>
+    </div>
+    <div class="stat-box blue">
+      <h3>Live Stats</h3>
+      <p id="liveUsers">0</p>
+    </div>
   </div>
 
+  <table class="users-table">
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>IP Address</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="userList">
+      <!-- Dynamic user data will be inserted here -->
+    </tbody>
+  </table>
+
   <script>
-    // Function to load users from localStorage
+    // Function to fetch users from localStorage and render them on the table
     function loadUsers() {
       let users = JSON.parse(localStorage.getItem('allUsers')) || [];
-      // Clean up invalid users
-      users = users.filter(u => u.id !== "bab" && u.id.length > 5);
-      return users;
-    }
+      // Filter out invalid users (if any)
+      users = users.filter(u => u.id && u.id.length > 5);  // Basic validation check
 
-    // Function to render the users table
-    function renderUsersTable() {
-      const users = loadUsers();
-      const tableBody = document.querySelector('#usersTable tbody');
-      tableBody.innerHTML = ''; // Clear existing table rows
+      // Update the total users and new users statistics
+      document.getElementById('totalUsers').textContent = users.length;
+
+      const newUsers = users.filter(u => new Date(u.joined).getTime() > Date.now() - 24*60*60*1000); // Last 24 hours
+      document.getElementById('newUsers').textContent = newUsers.length;
+
+      // Update the user table
+      const userList = document.getElementById('userList');
+      userList.innerHTML = ''; // Clear previous entries
 
       users.forEach(user => {
         const row = document.createElement('tr');
-
-        // User ID Cell
-        const idCell = document.createElement('td');
-        idCell.textContent = user.id;
-
-        // IP Cell
+        
+        const userIdCell = document.createElement('td');
+        userIdCell.textContent = user.id;
+        
         const ipCell = document.createElement('td');
         ipCell.textContent = user.ip;
 
-        // Join Date Cell
-        const joinDateCell = document.createElement('td');
-        joinDateCell.textContent = new Date(user.joined).toLocaleString();
-
-        // Actions Cell (Ban/Unban Buttons)
-        const actionsCell = document.createElement('td');
+        const actionCell = document.createElement('td');
         const banButton = document.createElement('button');
-        const unbanButton = document.createElement('button');
-
         banButton.textContent = 'Ban';
-        unbanButton.textContent = 'Unban';
-
-        // Ban button functionality
         banButton.classList.add('ban-btn');
-        banButton.addEventListener('click', () => banUser(user.id));
+        banButton.onclick = () => banUser(user.id);
 
-        // Unban button functionality
+        const unbanButton = document.createElement('button');
+        unbanButton.textContent = 'Unban';
         unbanButton.classList.add('unban-btn');
-        unbanButton.addEventListener('click', () => unbanUser(user.id));
+        unbanButton.onclick = () => unbanUser(user.id);
 
-        actionsCell.appendChild(banButton);
-        actionsCell.appendChild(unbanButton);
+        actionCell.appendChild(banButton);
+        actionCell.appendChild(unbanButton);
 
-        row.appendChild(idCell);
+        row.appendChild(userIdCell);
         row.appendChild(ipCell);
-        row.appendChild(joinDateCell);
-        row.appendChild(actionsCell);
+        row.appendChild(actionCell);
 
-        tableBody.appendChild(row);
+        userList.appendChild(row);
       });
     }
 
-    // Ban a user (add to banned list)
+    // Ban a user
     function banUser(userId) {
       let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
       if (!bannedUsers.includes(userId)) {
         bannedUsers.push(userId);
         localStorage.setItem('bannedUsers', JSON.stringify(bannedUsers));
         alert(`User ${userId} has been banned.`);
-        renderUsersTable(); // Re-render the table after banning
+        loadUsers();  // Reload user list after banning
       }
     }
 
-    // Unban a user (remove from banned list)
+    // Unban a user
     function unbanUser(userId) {
       let bannedUsers = JSON.parse(localStorage.getItem('bannedUsers')) || [];
       bannedUsers = bannedUsers.filter(id => id !== userId);
       localStorage.setItem('bannedUsers', JSON.stringify(bannedUsers));
       alert(`User ${userId} has been unbanned.`);
-      renderUsersTable(); // Re-render the table after unbanning
+      loadUsers();  // Reload user list after unbanning
     }
 
-    // Call renderUsersTable() to populate the table on page load
-    renderUsersTable();
+    // Initial load of users
+    loadUsers();
   </script>
 </body>
 </html>
