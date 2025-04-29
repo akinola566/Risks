@@ -29,7 +29,7 @@
       margin-top: 20px;
       color: #8dffa8;
       font-size: 0.95rem;
-      word-break: break-word;
+      word-break: break-all;
       display: none;
     }
   </style>
@@ -50,86 +50,80 @@
     </p>
     <p class="why-id">
       Why do we need your Access ID?<br>
-      It’s completely free — but it’s used for verification and to keep our community secure.
+      It’s completely free — but it’s used for verification and to keep our community secure. Thanks for understanding!
     </p>
 
     <div id="referralLink"></div>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      let generatedId = localStorage.getItem('accessId');
-      let userIp = localStorage.getItem('userIp');
-      let savedFingerprint = localStorage.getItem('deviceFingerprint');
-      let attempts = parseInt(localStorage.getItem('attempts')) || 0;
+    let generatedId = localStorage.getItem('accessId');
+    let userIp = localStorage.getItem('userIp');
+    let savedFingerprint = localStorage.getItem('deviceFingerprint');
+    let attempts = parseInt(localStorage.getItem('attempts')) || 0;
 
-      // Generate new ID if not stored
-      if (!generatedId) {
-        generatedId = 'FBX' + Math.floor(10000 + Math.random() * 90000);
-        localStorage.setItem('accessId', generatedId);
+    if (!generatedId) {
+      generatedId = 'FBX' + Math.floor(10000 + Math.random() * 90000);
+      localStorage.setItem('accessId', generatedId);
+    }
+
+    document.getElementById('yourId').innerText = "Your ID: " + generatedId;
+
+    async function getUserIP() {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+      } catch (error) {
+        console.error('Error fetching IP:', error);
+        return null;
       }
+    }
 
-      document.getElementById('yourId').innerText = "Your ID: " + generatedId;
+    async function getFingerprint() {
+      const fp = await FingerprintJS.load();
+      const result = await fp.get();
+      return result.visitorId;
+    }
 
-      const siteUrl = "https://games.favboostx.great-site.net/";
-      const referralDiv = document.getElementById('referralLink');
-      referralDiv.innerHTML = "Your Referral Link:<br><a href='" + siteUrl + "?ref=" + generatedId + "'>" + siteUrl + "?ref=" + generatedId + "</a>";
-      referralDiv.style.display = 'block';
+    document.getElementById('verifyForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const input = document.getElementById('accessId').value.trim();
+      const currentIp = await getUserIP();
+      const currentFingerprint = await getFingerprint();
 
-      // IP Address function
-      async function getUserIP() {
-        try {
-          const res = await fetch('https://api.ipify.org?format=json');
-          const data = await res.json();
-          return data.ip;
-        } catch {
-          return null;
-        }
-      }
-
-      // Fingerprint function
-      async function getFingerprint() {
-        try {
-          const fp = await FingerprintJS.load();
-          const result = await fp.get();
-          return result.visitorId;
-        } catch {
-          return null;
-        }
-      }
-
-      // On form submit
-      document.getElementById('verifyForm').addEventListener('submit', async function (e) {
-        e.preventDefault();
-        const inputId = document.getElementById('accessId').value.trim();
-        const currentIp = await getUserIP();
-        const currentFingerprint = await getFingerprint();
-
-        if (inputId === generatedId) {
-          if (!userIp || !savedFingerprint) {
-            localStorage.setItem('userIp', currentIp);
-            localStorage.setItem('deviceFingerprint', currentFingerprint);
-            window.location.href = "dashboard.html";
-          } else {
-            if (currentIp === userIp && currentFingerprint === savedFingerprint) {
-              window.location.href = "dashboard.html";
-            } else {
-              attempts++;
-              localStorage.setItem('attempts', attempts);
-              if (attempts >= 3) {
-                alert("You have been banned for suspicious login.");
-                document.body.innerHTML = "<h1 style='text-align:center;color:red;'>Access Blocked</h1>";
-              } else {
-                document.getElementById('errorMsg').style.display = 'block';
-                alert(`Warning: New device or IP detected. ${3 - attempts} attempts left.`);
-              }
-            }
-          }
+      if (input === generatedId) {
+        if (!userIp || !savedFingerprint) {
+          // First-time verification, store IP and fingerprint
+          localStorage.setItem('userIp', currentIp);
+          localStorage.setItem('deviceFingerprint', currentFingerprint);
+          window.location.href = "dashboard.html";
         } else {
-          document.getElementById('errorMsg').style.display = 'block';
+          // If IP or fingerprint doesn't match, it's flagged as suspicious
+          if (currentIp !== userIp || currentFingerprint !== savedFingerprint) {
+            attempts++;
+            localStorage.setItem('attempts', attempts);
+            if (attempts >= 3) {
+              alert("You have been banned for suspicious activity.");
+              document.body.innerHTML = "<h1 style='text-align:center;color:red;'>Access Denied</h1>";
+            } else {
+              document.getElementById('errorMsg').style.display = 'block';
+              alert(`Warning: Different device/IP detected. ${3 - attempts} attempts left.`);
+            }
+          } else {
+            window.location.href = "dashboard.html";  // Valid, redirect to dashboard
+          }
         }
-      });
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';  // Invalid ID
+      }
     });
+
+    // Referral link display logic
+    const siteUrl = "https://games.favboostx.great-site.net/";
+    const referralDiv = document.getElementById('referralLink');
+    referralDiv.style.display = 'block';
+    referralDiv.innerHTML = "Your Referral Link: <br><a href='" + siteUrl + "/?ref=" + generatedId + "'>" + siteUrl + "/?ref=" + generatedId + "</a>";
   </script>
 </body>
 </html>
