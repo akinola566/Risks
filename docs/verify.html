@@ -29,7 +29,7 @@
       margin-top: 20px;
       color: #8dffa8;
       font-size: 0.95rem;
-      word-break: break-all;
+      word-break: break-word;
       display: none;
     }
   </style>
@@ -50,83 +50,79 @@
     </p>
     <p class="why-id">
       Why do we need your Access ID?<br>
-      It’s completely free — but it’s used for verification and to keep our community secure. Thanks for understanding!
+      It’s completely free — but it’s used for verification and to keep our community secure.
     </p>
 
     <div id="referralLink"></div>
   </div>
 
   <script>
-    let generatedId = localStorage.getItem('accessId');
-    let userIp = localStorage.getItem('userIp');
-    let savedFingerprint = localStorage.getItem('deviceFingerprint');
-    let attempts = parseInt(localStorage.getItem('attempts')) || 0;
+    document.addEventListener('DOMContentLoaded', async () => {
+      let generatedId = localStorage.getItem('accessId');
+      let userIp = localStorage.getItem('userIp');
+      let savedFingerprint = localStorage.getItem('deviceFingerprint');
+      let attempts = parseInt(localStorage.getItem('attempts')) || 0;
 
-    if (!generatedId) {
-      generatedId = 'FBX' + Math.floor(10000 + Math.random() * 90000);
-      localStorage.setItem('accessId', generatedId);
-    }
+      // Generate new ID if not stored
+      if (!generatedId) {
+        generatedId = 'FBX' + Math.floor(10000 + Math.random() * 90000);
+        localStorage.setItem('accessId', generatedId);
+      }
 
-    document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('yourId').innerText = "Your ID: " + generatedId;
 
-      const referralDiv = document.getElementById('referralLink');
       const siteUrl = "https://games.favboostx.great-site.net/";
+      const referralDiv = document.getElementById('referralLink');
       referralDiv.innerHTML = "Your Referral Link:<br><a href='" + siteUrl + "?ref=" + generatedId + "'>" + siteUrl + "?ref=" + generatedId + "</a>";
       referralDiv.style.display = 'block';
 
+      // IP Address function
       async function getUserIP() {
         try {
           const res = await fetch('https://api.ipify.org?format=json');
           const data = await res.json();
           return data.ip;
-        } catch (e) {
-          console.error("IP Error:", e);
+        } catch {
           return null;
         }
       }
 
+      // Fingerprint function
       async function getFingerprint() {
         try {
           const fp = await FingerprintJS.load();
           const result = await fp.get();
           return result.visitorId;
-        } catch (e) {
-          console.error("Fingerprint Error:", e);
+        } catch {
           return null;
         }
       }
 
+      // On form submit
       document.getElementById('verifyForm').addEventListener('submit', async function (e) {
         e.preventDefault();
-
         const inputId = document.getElementById('accessId').value.trim();
         const currentIp = await getUserIP();
         const currentFingerprint = await getFingerprint();
-
-        console.log("Submitted ID:", inputId);
-        console.log("Generated ID:", generatedId);
-        console.log("Current IP:", currentIp);
-        console.log("Stored IP:", userIp);
-        console.log("Current Fingerprint:", currentFingerprint);
-        console.log("Stored Fingerprint:", savedFingerprint);
 
         if (inputId === generatedId) {
           if (!userIp || !savedFingerprint) {
             localStorage.setItem('userIp', currentIp);
             localStorage.setItem('deviceFingerprint', currentFingerprint);
             window.location.href = "dashboard.html";
-          } else if (currentIp === userIp || currentFingerprint === savedFingerprint) {
-            window.location.href = "dashboard.html";
           } else {
-            attempts++;
-            localStorage.setItem('attempts', attempts);
-            if (attempts >= 3) {
-              alert("Too many suspicious attempts. Access denied.");
-              document.body.innerHTML = "<h1 style='text-align:center;color:red;'>Access Denied</h1>";
+            if (currentIp === userIp && currentFingerprint === savedFingerprint) {
+              window.location.href = "dashboard.html";
             } else {
-              document.getElementById('errorMsg').style.display = 'block';
-              alert(`Suspicious login detected. ${3 - attempts} attempts left.`);
+              attempts++;
+              localStorage.setItem('attempts', attempts);
+              if (attempts >= 3) {
+                alert("You have been banned for suspicious login.");
+                document.body.innerHTML = "<h1 style='text-align:center;color:red;'>Access Blocked</h1>";
+              } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                alert(`Warning: New device or IP detected. ${3 - attempts} attempts left.`);
+              }
             }
           }
         } else {
