@@ -5,8 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>FavBoostX Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .menu-toggle, .admin-lock {
+      position: absolute;
+      top: 20px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .menu-toggle {
+      left: 20px;
+    }
+    .admin-lock {
+      right: 20px;
+      color: red;
+    }
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 20px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      z-index: 1000;
+    }
+    .dropdown-menu a {
+      display: block;
+      padding: 10px 15px;
+      text-decoration: none;
+      color: #333;
+    }
+    .dropdown-menu a:hover {
+      background: #f0f0f0;
+    }
+  </style>
 </head>
 <body class="dashboard">
+
+  <!-- Hamburger Menu -->
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <div class="dropdown-menu" id="dropdownMenu">
+    <a href="profile.html">Profile</a>
+    <a href="aviator.html">Aviator</a>
+    <a href="pingpong.html">Ping Pong</a>
+    <a href="football.html">Football</a>
+    <a href="logout.html">Logout</a>
+  </div>
+
+  <!-- Admin Lock Icon -->
+  <div class="admin-lock" onclick="window.location.href='admin.html'">🔒</div>
+
   <div class="dash-container">
     <h1>Welcome to the <span class="brand">FavBoostX</span> Dashboard!</h1>
     <p class="subtitle">Check out today’s game boosters:</p>
@@ -15,40 +63,32 @@
     <div class="game-card">
       <h3>Aviator Predictor</h3>
       <p>Next Multiplier: <strong>2.01x</strong></p>
-      <!-- Start Box to show full dashboard -->
       <a href="aviator.html" class="btn">Start Aviator</a>
     </div>
 
     <div class="game-card">
       <h3>Ping Pong Boost</h3>
       <p>Predicted Power: <strong>1.72x</strong></p>
-      <!-- Start Box to show full dashboard -->
       <a href="pingpong.html" class="btn">Start Ping Pong</a>
     </div>
 
-    <!-- New Game Prediction -->
     <div class="game-card">
       <h3>⚽ Football Prediction</h3>
       <p>SportyBet Code: <strong>ACB90</strong></p>
       <p>BetKing Code: <strong>XYZ23</strong></p>
-      <!-- Start Box to show full dashboard -->
       <a href="football.html" class="btn">Start Football</a>
     </div>
 
-    <!-- User Profile Section -->
     <div class="user-profile">
       <img src="profile-picture.jpg" alt="Profile Picture" class="profile-pic">
       <h3>Hello, [User Name]!</h3>
-      <!-- Link to Profile Page -->
       <a href="profile.html" class="btn">View Profile</a>
     </div>
 
-    <!-- Welcome Message -->
     <div class="welcome-message">
       <p>Welcome back to your dashboard! Here's how you're doing today:</p>
     </div>
 
-    <!-- Referral Progress -->
     <div class="referral-progress">
       <h4>Your Referrals</h4>
       <div class="progress-bar">
@@ -57,7 +97,6 @@
       <p>Keep going! You have 10 more referrals to unlock your next reward.</p>
     </div>
 
-    <!-- Stats Section -->
     <div class="stats">
       <div class="stat">
         <h5>BK Tokens</h5>
@@ -73,14 +112,12 @@
       </div>
     </div>
 
-    <!-- Quick Access Buttons -->
     <div class="quick-access">
       <a href="#" class="btn">Referral Link</a>
       <a href="#" class="btn">Rewards</a>
       <a href="#" class="btn">Settings</a>
     </div>
 
-    <!-- Leaderboard -->
     <div class="leaderboard">
       <h4>Top Referrers</h4>
       <ul>
@@ -90,16 +127,21 @@
       </ul>
     </div>
 
-    <!-- Announcements/News -->
     <div class="announcements">
       <marquee>🚨 New Token Reward System Coming Soon! 🚨</marquee>
     </div>
 
-    <!-- Coming Soon Notice -->
     <div class="coming-soon">
       <h2>🎯 More Game Boosters Coming Soon!</h2>
       <p>Stay tuned for more predictions and features!</p>
     </div>
   </div>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById("dropdownMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+  </script>
 </body>
   </html>
