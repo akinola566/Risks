@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FavBoostX - Verify</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://openfpcdn.io/fingerprintjs/v3"></script>
   <style>
     .error-message {
       color: #ff8db2;
@@ -53,17 +54,16 @@
     </p>
 
     <div id="referralLink"></div>
-
   </div>
 
   <script>
     let generatedId = localStorage.getItem('accessId');
     let userIp = localStorage.getItem('userIp');
+    let savedFingerprint = localStorage.getItem('deviceFingerprint');
     let attempts = parseInt(localStorage.getItem('attempts')) || 0;
 
-    // Generate random ID if not existing
     if (!generatedId) {
-      generatedId = 'FBX' + Math.floor(10000 + Math.random() * 90000); // Example: FBX12345
+      generatedId = 'FBX' + Math.floor(10000 + Math.random() * 90000);
       localStorage.setItem('accessId', generatedId);
     }
 
@@ -80,31 +80,36 @@
       }
     }
 
+    async function getFingerprint() {
+      const fp = await FingerprintJS.load();
+      const result = await fp.get();
+      return result.visitorId;
+    }
+
     document.getElementById('verifyForm').addEventListener('submit', async function(event) {
       event.preventDefault();
       const input = document.getElementById('accessId').value.trim();
+      const currentIp = await getUserIP();
+      const currentFingerprint = await getFingerprint();
 
       if (input === generatedId) {
-        const currentIp = await getUserIP();
-        if (!userIp) {
-          // First time - save IP
+        if (!userIp || !savedFingerprint) {
+          // First-time verification
           localStorage.setItem('userIp', currentIp);
+          localStorage.setItem('deviceFingerprint', currentFingerprint);
           window.location.href = "dashboard.html";
         } else {
-          if (currentIp === userIp) {
-            // IP matches
+          if (currentIp === userIp && currentFingerprint === savedFingerprint) {
             window.location.href = "dashboard.html";
           } else {
-            // Different IP detected
             attempts++;
             localStorage.setItem('attempts', attempts);
-
             if (attempts >= 3) {
               alert("You have been banned for suspicious activity.");
               document.body.innerHTML = "<h1 style='text-align:center;color:red;'>Access Denied</h1>";
             } else {
               document.getElementById('errorMsg').style.display = 'block';
-              alert(`Warning: Different device detected. ${3 - attempts} attempts left.`);
+              alert(`Warning: Different device/IP detected. ${3 - attempts} attempts left.`);
             }
           }
         }
@@ -113,11 +118,12 @@
       }
     });
 
-    // Optionally show referral link if verified already
     if (generatedId) {
-      const siteUrl = "https://games.favboostx.great-site.net/"; // Change to your real site URL
+      const siteUrl = "https://games.favboostx.great-site.net/";
       document.getElementById('referralLink').style.display = 'block';
-      document.getElementById('referralLink').innerHTML = "Your Referral Link: <br><a href='" + siteUrl + "/?ref=" + generatedId + "'>" + siteUrl + "/?ref=" + generatedId + "</a>";
+      document.getElementById('referralLink').innerHTML =
+        "Your Referral Link: <br><a href='" + siteUrl + "/?ref=" + generatedId + "'>" +
+        siteUrl + "/?ref=" + generatedId + "</a>";
     }
   </script>
 </body>
