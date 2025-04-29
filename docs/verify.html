@@ -29,7 +29,7 @@
       margin-top: 20px;
       color: #8dffa8;
       font-size: 0.95rem;
-      word-break: break-word;
+      word-break: break-all;
       display: none;
     }
   </style>
@@ -67,65 +67,73 @@
       localStorage.setItem('accessId', generatedId);
     }
 
-    document.getElementById('yourId').innerText = "Your ID: " + generatedId;
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('yourId').innerText = "Your ID: " + generatedId;
 
-    async function getUserIP() {
-      try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        return data.ip;
-      } catch (error) {
-        console.error('Error fetching IP:', error);
-        return null;
+      const referralDiv = document.getElementById('referralLink');
+      const siteUrl = "https://games.favboostx.great-site.net/";
+      referralDiv.innerHTML = "Your Referral Link:<br><a href='" + siteUrl + "?ref=" + generatedId + "'>" + siteUrl + "?ref=" + generatedId + "</a>";
+      referralDiv.style.display = 'block';
+
+      async function getUserIP() {
+        try {
+          const res = await fetch('https://api.ipify.org?format=json');
+          const data = await res.json();
+          return data.ip;
+        } catch (e) {
+          console.error("IP Error:", e);
+          return null;
+        }
       }
-    }
 
-    async function getFingerprint() {
-      const fp = await FingerprintJS.load();
-      const result = await fp.get();
-      return result.visitorId;
-    }
+      async function getFingerprint() {
+        try {
+          const fp = await FingerprintJS.load();
+          const result = await fp.get();
+          return result.visitorId;
+        } catch (e) {
+          console.error("Fingerprint Error:", e);
+          return null;
+        }
+      }
 
-    document.getElementById('verifyForm').addEventListener('submit', async function(event) {
-      event.preventDefault();
-      const input = document.getElementById('accessId').value.trim();
-      const currentIp = await getUserIP();
-      const currentFingerprint = await getFingerprint();
+      document.getElementById('verifyForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
 
-      if (input === generatedId) {
-        if (!userIp || !savedFingerprint) {
-          // First-time verification
-          localStorage.setItem('userIp', currentIp);
-          localStorage.setItem('deviceFingerprint', currentFingerprint);
-          window.location.href = "dashboard.html";
-        } else {
-          // Check if either IP or fingerprint matches
-          if (currentIp === userIp || currentFingerprint === savedFingerprint) {
+        const inputId = document.getElementById('accessId').value.trim();
+        const currentIp = await getUserIP();
+        const currentFingerprint = await getFingerprint();
+
+        console.log("Submitted ID:", inputId);
+        console.log("Generated ID:", generatedId);
+        console.log("Current IP:", currentIp);
+        console.log("Stored IP:", userIp);
+        console.log("Current Fingerprint:", currentFingerprint);
+        console.log("Stored Fingerprint:", savedFingerprint);
+
+        if (inputId === generatedId) {
+          if (!userIp || !savedFingerprint) {
+            localStorage.setItem('userIp', currentIp);
+            localStorage.setItem('deviceFingerprint', currentFingerprint);
+            window.location.href = "dashboard.html";
+          } else if (currentIp === userIp || currentFingerprint === savedFingerprint) {
             window.location.href = "dashboard.html";
           } else {
             attempts++;
             localStorage.setItem('attempts', attempts);
             if (attempts >= 3) {
-              alert("Too many suspicious attempts. Access temporarily blocked.");
+              alert("Too many suspicious attempts. Access denied.");
               document.body.innerHTML = "<h1 style='text-align:center;color:red;'>Access Denied</h1>";
             } else {
               document.getElementById('errorMsg').style.display = 'block';
               alert(`Suspicious login detected. ${3 - attempts} attempts left.`);
             }
           }
+        } else {
+          document.getElementById('errorMsg').style.display = 'block';
         }
-      } else {
-        document.getElementById('errorMsg').style.display = 'block';
-      }
+      });
     });
-
-    if (generatedId) {
-      const siteUrl = "https://games.favboostx.great-site.net/";
-      document.getElementById('referralLink').style.display = 'block';
-      document.getElementById('referralLink').innerHTML =
-        "Your Referral Link: <br><a href='" + siteUrl + "?ref=" + generatedId + "'>" +
-        siteUrl + "?ref=" + generatedId + "</a>";
-    }
   </script>
 </body>
 </html>
