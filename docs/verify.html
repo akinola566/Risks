@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FavBoostX - Verify</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://openfpcdn.io/fingerprintjs/v3"></script>
   <style>
     .error-message {
       color: #ff8db2;
@@ -41,9 +40,7 @@
       <input type="text" id="accessId" placeholder="Access ID" required>
       <button type="submit">Verify</button>
       <p class="error-message" id="errorMsg">Wrong ID or suspicious login detected. Please try again.</p>
-    </form>
-
-    <p class="info-message" id="yourId"></p>
+    </form><p class="info-message" id="yourId"></p>
 
     <p class="chat-link">
       Don’t have an ID? <a href="https://wa.me/2348100096815">Chat Now</a>
@@ -54,16 +51,16 @@
     </p>
 
     <div id="referralLink"></div>
-  </div>
 
+  </div>  
   <script>
     let generatedId = localStorage.getItem('accessId');
     let userIp = localStorage.getItem('userIp');
-    let savedFingerprint = localStorage.getItem('deviceFingerprint');
     let attempts = parseInt(localStorage.getItem('attempts')) || 0;
 
+    // Generate random ID if not existing
     if (!generatedId) {
-      generatedId = 'FBX' + Math.floor(10000 + Math.random() * 90000);
+      generatedId = 'FBX' + Math.floor(10000 + Math.random() * 90000); // Example: FBX12345
       localStorage.setItem('accessId', generatedId);
     }
 
@@ -80,50 +77,45 @@
       }
     }
 
-    async function getFingerprint() {
-      const fp = await FingerprintJS.load();
-      const result = await fp.get();
-      return result.visitorId;
-    }
-
     document.getElementById('verifyForm').addEventListener('submit', async function(event) {
       event.preventDefault();
       const input = document.getElementById('accessId').value.trim();
-      const currentIp = await getUserIP();
-      const currentFingerprint = await getFingerprint();
 
       if (input === generatedId) {
-        if (!userIp || !savedFingerprint) {
-          // First-time verification, store IP and fingerprint
+        const currentIp = await getUserIP();
+        if (!userIp) {
+          // First time - save IP
           localStorage.setItem('userIp', currentIp);
-          localStorage.setItem('deviceFingerprint', currentFingerprint);
           window.location.href = "dashboard.html";
         } else {
-          // If IP or fingerprint doesn't match, it's flagged as suspicious
-          if (currentIp !== userIp || currentFingerprint !== savedFingerprint) {
+          if (currentIp === userIp) {
+            // IP matches
+            window.location.href = "dashboard.html";
+          } else {
+            // Different IP detected
             attempts++;
             localStorage.setItem('attempts', attempts);
+
             if (attempts >= 3) {
               alert("You have been banned for suspicious activity.");
               document.body.innerHTML = "<h1 style='text-align:center;color:red;'>Access Denied</h1>";
             } else {
               document.getElementById('errorMsg').style.display = 'block';
-              alert(`Warning: Different device/IP detected. ${3 - attempts} attempts left.`);
+              alert(`Warning: Different device detected. ${3 - attempts} attempts left.`);
             }
-          } else {
-            window.location.href = "dashboard.html";  // Valid, redirect to dashboard
           }
         }
       } else {
-        document.getElementById('errorMsg').style.display = 'block';  // Invalid ID
+        document.getElementById('errorMsg').style.display = 'block';
       }
     });
 
-    // Referral link display logic
-    const siteUrl = "https://games.favboostx.great-site.net/";
-    const referralDiv = document.getElementById('referralLink');
-    referralDiv.style.display = 'block';
-    referralDiv.innerHTML = "Your Referral Link: <br><a href='" + siteUrl + "/?ref=" + generatedId + "'>" + siteUrl + "/?ref=" + generatedId + "</a>";
+    // Optionally show referral link if verified already
+    if (generatedId) {
+      const siteUrl = "https://games.favboostx.great-site.net/"; // Change to your real site URL
+      document.getElementById('referralLink').style.display = 'block';
+      document.getElementById('referralLink').innerHTML = "Your Referral Link: <br><a href='" + siteUrl + "/?ref=" + generatedId + "'>" + siteUrl + "/?ref=" + generatedId + "</a>";
+    }
   </script>
 </body>
 </html>
