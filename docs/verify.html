@@ -29,7 +29,7 @@
       margin-top: 20px;
       color: #8dffa8;
       font-size: 0.95rem;
-      word-break: break-all;
+      word-break: break-word;
       display: none;
     }
   </style>
@@ -99,17 +99,18 @@
           localStorage.setItem('deviceFingerprint', currentFingerprint);
           window.location.href = "dashboard.html";
         } else {
-          if (currentIp === userIp && currentFingerprint === savedFingerprint) {
+          // Check if either IP or fingerprint matches
+          if (currentIp === userIp || currentFingerprint === savedFingerprint) {
             window.location.href = "dashboard.html";
           } else {
             attempts++;
             localStorage.setItem('attempts', attempts);
             if (attempts >= 3) {
-              alert("You have been banned for suspicious activity.");
+              alert("Too many suspicious attempts. Access temporarily blocked.");
               document.body.innerHTML = "<h1 style='text-align:center;color:red;'>Access Denied</h1>";
             } else {
               document.getElementById('errorMsg').style.display = 'block';
-              alert(`Warning: Different device/IP detected. ${3 - attempts} attempts left.`);
+              alert(`Suspicious login detected. ${3 - attempts} attempts left.`);
             }
           }
         }
@@ -122,8 +123,8 @@
       const siteUrl = "https://games.favboostx.great-site.net/";
       document.getElementById('referralLink').style.display = 'block';
       document.getElementById('referralLink').innerHTML =
-        "Your Referral Link: <br><a href='" + siteUrl + "/?ref=" + generatedId + "'>" +
-        siteUrl + "/?ref=" + generatedId + "</a>";
+        "Your Referral Link: <br><a href='" + siteUrl + "?ref=" + generatedId + "'>" +
+        siteUrl + "?ref=" + generatedId + "</a>";
     }
   </script>
 </body>
