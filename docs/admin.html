@@ -1,0 +1,110 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Control Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #ff4444;
+    }
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-box {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    .stat-box.red {
+      background-color: #8b0000;
+    }
+    .stat-box.green {
+      background-color: #006400;
+    }
+    .stat-box.blue {
+      background-color: #003366;
+    }
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .users-table th, .users-table td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: center;
+    }
+    .users-table th {
+      background-color: #222;
+    }
+    .ban-btn {
+      padding: 5px 10px;
+      background-color: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .unban-btn {
+      background-color: #228B22;
+    }
+    .lock-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      color: #ff4444;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="lock-icon" title="Back to Dashboard">
+    <a href="dashboard.html" style="text-decoration:none;color:#ff4444;">&#128274;</a>
+  </div>  <h1>Admin Panel</h1>  <div class="stats">
+    <div class="stat-box red">
+      <h3>Total Users</h3>
+      <p id="totalUsers">0</p>
+    </div>
+    <div class="stat-box green">
+      <h3>New Users</h3>
+      <p id="newUsers">0</p>
+    </div>
+    <div class="stat-box blue">
+      <h3>Live Stats</h3>
+      <p id="liveUsers">0</p>
+    </div>
+  </div>  <table class="users-table">
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>IP Address</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="userList">
+      <!-- Dynamic user data will be inserted here -->
+      <tr>
+        <td>001</td>
+        <td>192.168.1.45</td>
+        <td><button class="ban-btn">Ban</button></td>
+      </tr>
+      <tr>
+        <td>002</td>
+        <td>192.168.1.46</td>
+        <td><button class="ban-btn unban-btn">Unban</button></td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
